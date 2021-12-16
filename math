@@ -1,0 +1,20 @@
+const rollDice = (params) => {
+	const match = /^(\d+)?d(\d+)([+-]\d+)?$/.exec(params);
+	if (!match) {
+		return false;
+	}
+
+	const howMany = typeof match[1] == "undefined" ? 1 : parseInt(match[1]);
+	const diceSize = parseInt(match[2]);
+	const modifier = typeof match[3] == "undefined" ? 0 : parseInt(match[3]);
+	let results = [];
+	let total;
+	for (x = 0; x < howMany; x++) {
+		results.push(Math.floor(Math.random() * diceSize + 1));
+	}
+	total = results.reduce((a, b) => a + b, 0) + modifier;
+
+	return results;
+};
+
+module.exports = rollDice;
