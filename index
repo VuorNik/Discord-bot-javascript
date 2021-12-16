@@ -1,0 +1,81 @@
+require('dotenv').config(); //initialize dotenv
+const Discord = require('discord.js'); //import discord.js
+const keep_alive = require('./keep_alive.js')
+const roll = require('./noppa.js')
+const prefix = require('discord-prefix');
+const ruokalista = require('./ruokalista.js')
+
+let defaultPrefix = '!';
+const client = new Discord.Client(); //create new client
+
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('message', (message) => {
+    //stop code execution if message is received in DMs
+    if (!message.guild) return;
+
+    //get the prefix for the discord server
+    let guildPrefix = prefix.getPrefix(message.guild.id);
+
+    //set prefix to the default prefix if there isn't one
+    if (!guildPrefix) guildPrefix = defaultPrefix;
+
+    //rest of the message event
+    let args = message.content.slice(guildPrefix.length).split(' ');
+
+    if (!message.content.startsWith(guildPrefix))
+    return;
+
+    const command = args[0].toLowerCase();
+    const params = args[1];
+    switch(command) {
+      case 'ping':
+      message.channel.send('pong');
+      break;
+
+      case 'b':
+      message.channel.send('pong2');
+      break;
+
+      case 'n':
+      const results = roll.run(params);
+      if (!results) {
+        message.channel.send('Virheelliset noppaparametrit: '+params)
+        break;
+      }
+      message.channel.send('Heiton '+params+' tulos on '+results.join(', '))
+      break;
+
+      case 'skribbl':
+      message.channel.send('https://skribbl.io/');
+      break;
+
+      case 'apua':
+      message.channel.send('Käytössä olevat komennot\nHeitä noppaa: Esim. !n 1d6 heittää yhden kerran kuusisivuista noppaa\nAvaa piirtopeli: !skribbl (sanalistan ja pelihuoneen joutuu tekemään itse :( )');
+      break;
+
+      case 'ruoka':
+      const lista = ruokalista(params);
+      if (lista) {
+        lista.forEach(element => {
+          message.channel.send(element);
+          message.channel.send('<https://www.valio.fi/reseptit/haku/?haku='+element.split(' ').join('-')+'#>');
+        })
+        break;
+      }
+      message.channel.send('Virheelliset parametrit tai pyysit liikaa ruokia!');
+      break;
+
+      case 'ruokaks':
+      message.channel.send('https://www.valio.fi/reseptit/haku/?haku='+params+'#');
+      break;
+
+      default:
+      message.reply('?');
+      break;
+    }
+});
+//make sure this line is the last line
+client.login(process.env.TOKEN); //login bot using token
