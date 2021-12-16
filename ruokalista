@@ -1,0 +1,17 @@
+var _ = require('underscore');
+var fs = require("fs");
+
+var text = fs.readFileSync("./ruoat.txt", 'utf-8');
+var lista = text.split('\n')
+
+const ruokalista = (params=1) => {
+  const num = parseInt(params);
+  //console.log(_.sample(textByLine, num));
+  if (params <= lista.length){
+    const res = _.sample(lista,num);    
+    return res;
+  }
+  return false
+}
+
+module.exports = ruokalista;
