@@ -1,0 +1,10 @@
+const roll = require("./math");
+
+exports.run = (params) => {
+  const results = roll(params);
+  return results;
+}
+
+exports.help = {
+	name: "noppa",
+};
